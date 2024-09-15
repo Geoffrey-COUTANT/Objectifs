@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barre de Progression Liquide avec Vagues</title>
+    <title>Barre de Progression Liquide</title>
     <style>
         body {
             background-color: rgba(0, 0, 0, 0); /* Fond transparent pour OBS */
@@ -22,19 +22,19 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre portée */
         }
 
-        /* Conteneur fixe pour les vagues */
-        .liquid-mask {
+        .progress-bar {
             position: absolute;
-            width: 100%;
-            height: 100%;
             top: 0;
             left: 0;
+            height: 100%;
+            width: 0%; /* La largeur va augmenter avec la progression */
             overflow: hidden;
+            background: none; /* Aucun fond ici, juste le liquide en dessous */
+            z-index: 1;
         }
 
-        /* Vagues qui se déplacent en continu */
         .progress-liquid {
-            width: 200%; /* Largeur de 200% pour l'effet de mouvement fluide */
+            width: 200%; /* Largeur de 200% pour permettre le mouvement fluide */
             height: 100%;
             background: linear-gradient(135deg, #4CAF50 25%, #00FF7F 75%); /* Couleur dégradée du liquide */
             position: absolute;
@@ -43,25 +43,14 @@
             animation: wave 3s infinite linear; /* Animation continue de la vague */
         }
 
-        /* Animation pour simuler le mouvement de la vague de gauche à droite */
+        /* Animation des vagues */
         @keyframes wave {
             0% {
                 transform: translateX(0);
             }
             100% {
-                transform: translateX(-50%); /* Déplacement continu de la vague */
+                transform: translateX(-50%); /* Le liquide se déplace de gauche à droite */
             }
-        }
-
-        /* Barre de progression */
-        .progress-bar {
-            position: absolute;
-            width: 0%; /* Commence à 0% et sera mis à jour par JavaScript */
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-color: transparent; /* Transparence pour voir l'effet liquide en dessous */
-            z-index: 1;
         }
 
         .progress-text {
@@ -75,15 +64,13 @@
             line-height: 50px; /* Centrer le texte verticalement */
             z-index: 10;
         }
-
     </style>
 </head>
 <body>
     <div class="progress-container">
-        <div class="liquid-mask">
+        <div class="progress-bar" id="progress-bar">
             <div class="progress-liquid"></div>
         </div>
-        <div class="progress-bar" id="progress-bar"></div>
         <div class="progress-text" id="progress-text">0%</div>
     </div>
 
@@ -94,18 +81,18 @@
             const progressBar = document.getElementById('progress-bar');
             const progressText = document.getElementById('progress-text');
             
-            // Mise à jour de la largeur de la barre en fonction de la progression
+            // Mise à jour de la largeur du liquide en fonction de la progression
             progressBar.style.width = `${progress}%`;
 
             // Mise à jour du texte
             progressText.textContent = Math.round(progress) + '%';
         }
 
-        // Exemple d'utilisation avec une valeur de 60/100
+        // Exemple d'utilisation avec une valeur initiale de 60/100
         updateProgressBar(60, 100); // Actualise la barre à 60%
 
         // Simuler une actualisation toutes les secondes (pour les tests)
-        let value = 0;
+        let value = 60;
         setInterval(() => {
             if (value < 100) {
                 value += 1;
