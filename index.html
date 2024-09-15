@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barre de Progression Liquide avec Vagues</title>
+    <title>Barre de Progression Liquide Horizontal</title>
     <style>
         body {
             background-color: rgba(0, 0, 0, 0); /* Fond transparent pour OBS */
@@ -14,7 +14,7 @@
 
         .progress-container {
             width: 100%;
-            height: 200px; /* Hauteur de la barre pour l'effet liquide */
+            height: 50px; /* Hauteur de la barre pour l'effet liquide */
             background-color: #333; /* Couleur de fond de la barre */
             border-radius: 25px;
             overflow: hidden;
@@ -23,13 +23,12 @@
         }
 
         .progress-liquid {
-            width: 200%; /* Plus large que le conteneur pour l'effet de vague */
             height: 100%;
+            width: 100%; /* S'étend sur toute la largeur du conteneur */
             background: linear-gradient(135deg, #4CAF50 25%, #00FF7F 75%); /* Couleur dégradée du liquide */
             position: absolute;
-            bottom: 0;
-            left: 0;
-            border-radius: 25px;
+            left: -100%; /* Commence en dehors du conteneur à gauche */
+            top: 0;
             animation: wave 3s infinite linear; /* Animation pour les vagues */
         }
 
@@ -39,7 +38,7 @@
                 transform: translateX(0);
             }
             100% {
-                transform: translateX(-50%);
+                transform: translateX(100%);
             }
         }
 
@@ -49,18 +48,19 @@
             text-align: center;
             top: 0;
             left: 0;
-            font-size: 2em;
+            font-size: 1.5em;
             color: white;
-            line-height: 200px; /* Centrer le texte verticalement */
+            line-height: 50px; /* Centrer le texte verticalement */
             z-index: 10;
         }
 
         .liquid-mask {
             position: absolute;
-            width: 100%;
+            width: 0%; /* La largeur commence à 0 et augmentera avec la progression */
             height: 100%;
             overflow: hidden;
-            bottom: 0;
+            top: 0;
+            left: 0;
             border-radius: 25px;
         }
 
@@ -81,8 +81,8 @@
             const liquidMask = document.getElementById('liquid-mask');
             const progressText = document.getElementById('progress-text');
             
-            // Mise à jour de la hauteur du liquide en fonction de la progression
-            liquidMask.style.height = `${progress}%`;
+            // Mise à jour de la largeur du liquide en fonction de la progression
+            liquidMask.style.width = `${progress}%`;
 
             // Mise à jour du texte
             progressText.textContent = Math.round(progress) + '%';
