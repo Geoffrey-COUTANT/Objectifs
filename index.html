@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barre de Progression</title>
+    <title>Barre de Progression Liquide</title>
     <style>
         body {
             background-color: rgba(0, 0, 0, 0); /* Fond transparent pour OBS */
@@ -14,64 +14,78 @@
 
         .progress-container {
             width: 100%;
+            height: 200px; /* Hauteur de la barre pour l'effet liquide */
             background-color: #333; /* Couleur de fond de la barre */
             border-radius: 25px;
             overflow: hidden;
-            height: 30px;
+            position: relative;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre portée */
         }
 
-        .progress-bar {
+        .progress-liquid {
+            width: 100%;
             height: 100%;
-            width: 0%; /* Rempli à 0% au début */
-            background-color: #4CAF50; /* Couleur de la barre de progression */
-            text-align: center;
-            line-height: 30px; /* Aligne le texte verticalement */
-            color: white;
+            background: linear-gradient(135deg, #4CAF50 25%, #00FF7F 75%); /* Couleur dégradée du liquide */
+            position: absolute;
+            bottom: -100%; /* Commence en dehors de la barre */
             border-radius: 25px;
-            transition: width 0.5s ease; /* Animation douce pour la progression */
+            animation: liquidRise 0.5s ease-out forwards; /* Animation d'entrée du liquide */
+        }
+
+        /* Effet d'animation du liquide qui monte */
+        @keyframes liquidRise {
+            0% {
+                bottom: -100%;
+            }
+            100% {
+                bottom: 0;
+            }
+        }
+
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 0;
+            left: 0;
+            font-size: 2em;
+            color: white;
+            line-height: 200px; /* Centrer le texte verticalement */
+            z-index: 10;
         }
     </style>
 </head>
 <body>
     <div class="progress-container">
-        <div class="progress-bar" id="progress-bar">0%</div>
+        <div class="progress-liquid" id="progress-liquid"></div>
+        <div class="progress-text" id="progress-text">0%</div>
     </div>
 
     <script>
-        // Variables pour API Twitch
-        const clientId = 'c61hjhmaz55d54at6qlshgh6zibz84'; // Remplace par ton Client ID
-        const accessToken = 'XXB6JhWiS6hTTKpYCXl9u2GilxDLO0y0c9Bmtian5cU='; // Remplace par ton Access Token
-        const userId = 'radiou22'; // Remplace par l'ID de l'utilisateur
-
-        async function getTwitchFollowers() {
-            const response = await fetch(`https://api.twitch.tv/helix/users/follows?to_id=${userId}`, {
-                headers: {
-                    'Client-ID': clientId,
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-
-            const data = await response.json();
-            const totalFollowers = data.total;
-            
-            // Exemple d'actualisation de la barre avec le nombre de followers
-            updateProgressBar(totalFollowers, 1000); // 1000 est l'objectif à atteindre
-        }
-
         // Fonction pour mettre à jour la barre de progression
         function updateProgressBar(currentValue, maxValue) {
             let progress = (currentValue / maxValue) * 100;
-            const progressBar = document.getElementById('progress-bar');
-            progressBar.style.width = progress + '%';
-            progressBar.textContent = Math.round(progress) + '%';
+            const liquid = document.getElementById('progress-liquid');
+            const progressText = document.getElementById('progress-text');
+            
+            // Mise à jour de la hauteur du liquide
+            liquid.style.bottom = `-${100 - progress}%`; // Monte selon le pourcentage de la progression
+            
+            // Mise à jour du texte
+            progressText.textContent = Math.round(progress) + '%';
         }
 
-        // Appel initial pour récupérer les données
-        getTwitchFollowers();
+        // Exemple d'utilisation avec une valeur de 60/100
+        updateProgressBar(60, 100); // Actualise la barre à 60%
         
-        // Actualisation toutes les minutes
-        setInterval(getTwitchFollowers, 6000); // 60 000 ms = 1 minute
+        // Simuler une actualisation toutes les secondes (pour les tests)
+        let value = 60;
+        setInterval(() => {
+            if (value < 100) {
+                value += 1;
+                updateProgressBar(value, 100);
+            }
+        }, 1000); // 1 seconde
     </script>
 </body>
 </html>
