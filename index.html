@@ -71,7 +71,7 @@
         <div class="progress-bar" id="progress-bar">
             <div class="progress-liquid"></div>
         </div>
-        <div class="progress-text" id="progress-text">0%</div>
+        <div class="progress-text" id="progress-text">0 / 100</div>
     </div>
 
     <script>
@@ -85,20 +85,23 @@
             progressBar.style.width = `${progress}%`;
 
             // Mise à jour du texte
-            progressText.textContent = Math.round(progress) + '%';
+            progressText.textContent = `${currentValue} / ${maxValue}`;
         }
 
-        // Exemple d'utilisation avec une valeur initiale de 60/100
-        updateProgressBar(0, 100); // Actualise la barre à 60%
+        // Valeur cible (modifiable)
+        const targetValue = 100;
+
+        // Exemple d'utilisation avec une valeur initiale de 0/100
+        updateProgressBar(0, targetValue);
 
         // Simuler une actualisation toutes les secondes (pour les tests)
         let value = 0;
         setInterval(() => {
-            if (value < 100) {
+            if (value < targetValue) {
                 value += 1;
-                updateProgressBar(value, 100);
+                updateProgressBar(value, targetValue);
             }
-        }, 100); // 1 seconde
+        }, 100); // 100 ms pour une animation plus rapide
     </script>
 </body>
 </html>
