@@ -36,7 +36,7 @@
         .progress-liquid {
             width: 200%; /* Largeur de 200% pour permettre le mouvement fluide */
             height: 100%;
-            background-color: #4CAF50;
+            background-color: #4CAF50; /* Couleur unie verte pour le liquide */
             position: absolute;
             left: 0;
             top: 0;
@@ -88,20 +88,32 @@
             progressText.textContent = `${currentValue} / ${maxValue}`;
         }
 
-        // Valeur cible (modifiable)
-        const targetValue = 15;
+        // Fonction pour récupérer les objectifs depuis l'API Twitch
+        async function fetchTwitchGoals() {
+            const clientId = 'Yc61hjhmaz55d54at6qlshgh6zibz84'; // Remplacez par votre Client ID Twitch
+            const accessToken = 'XXB6JhWiS6hTTKpYCXl9u2GilxDLO0y0c9Bmtian5cU='; // Remplacez par votre jeton d'accès OAuth
+            
+            // Requête à l'API Twitch pour obtenir les données de l'objectif
+            const response = await fetch('https://api.twitch.tv/helix/users', {
+                headers: {
+                    'Client-ID': clientId,
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+            const data = await response.json();
+            
+            // Vous devrez ajuster cette partie en fonction des données que vous recevez
+            const currentValue = data.data[0].view_count; // Exemple: obtenir un champ spécifique
+            const targetValue = 15; // Exemple de valeur cible
 
-        // Exemple d'utilisation avec une valeur initiale de 0/100
-        updateProgressBar(0, targetValue);
+            updateProgressBar(currentValue, targetValue);
+        }
+
+        // Appel initial pour mettre à jour la barre de progression
+        fetchTwitchGoals();
 
         // Simuler une actualisation toutes les secondes (pour les tests)
-        let value = 0;
-        setInterval(() => {
-            if (value < targetValue) {
-                value += 1;
-                updateProgressBar(value, targetValue);
-            }
-        }, 100); // 100 ms pour une animation plus rapide
+        setInterval(fetchTwitchGoals, 1000); // Actualisation toutes les 1 secondes
     </script>
 </body>
 </html>
